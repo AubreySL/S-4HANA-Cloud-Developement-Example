@@ -9,20 +9,26 @@ import com.sap.cloud.sdk.s4hana.datamodel.odata.namespaces.businesspartner.Busin
 import com.sap.cloud.sdk.s4hana.datamodel.odata.services.BusinessPartnerService;
 
 public class CreateAddressCommand extends ErpCommand<BusinessPartnerAddress> {
-	private static final Logger logger = CloudLoggerFactory.getLogger(CreateAddressCommand.class);
+    private static final Logger logger = CloudLoggerFactory.getLogger(CreateAddressCommand.class);
 
-	private final BusinessPartnerService service;
-	private final BusinessPartnerAddress addressToCreate;
+    private final BusinessPartnerService service;
+    private final BusinessPartnerAddress addressToCreate;
 
-	public CreateAddressCommand(final BusinessPartnerService service, final BusinessPartnerAddress addressToCreate) {
-		super(HystrixUtil.getDefaultErpCommandSetter(CreateAddressCommand.class,
-				HystrixUtil.getDefaultErpCommandProperties().withExecutionTimeoutInMilliseconds(10000)));
-		this.service = service;
-		this.addressToCreate = addressToCreate;
-	}
+    public CreateAddressCommand(final BusinessPartnerService service, final BusinessPartnerAddress addressToCreate) {
+        super(HystrixUtil.getDefaultErpCommandSetter(
+                CreateAddressCommand.class,
+                HystrixUtil.getDefaultErpCommandProperties().withExecutionTimeoutInMilliseconds(10000)));
 
-	@Override
-	protected BusinessPartnerAddress run() throws Exception {
-		return service.createBusinessPartnerAddress(addressToCreate).execute();
-	}
+        this.service = service;
+        this.addressToCreate = addressToCreate;
+    }
+
+    @Override
+    protected BusinessPartnerAddress run() throws Exception {
+        final BusinessPartnerAddress addressCreated = service
+                .createBusinessPartnerAddress(addressToCreate)
+                .execute();
+
+        return addressCreated;
+    }
 }
